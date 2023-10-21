@@ -36,7 +36,8 @@ module TestProf
       end
 
       def top_count=(value)
-        @top_count = (value || 5).to_i
+        @top_count = value.to_i
+        @top_count = 5 unless @top_count.positive?
       end
     end
 
