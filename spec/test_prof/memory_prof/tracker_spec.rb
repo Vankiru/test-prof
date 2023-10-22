@@ -173,30 +173,6 @@ describe TestProf::MemoryProf::AllocTracker do
       expect(track).to eq(100)
     end
   end
-
-  describe "#mode" do
-    let(:mode) { subject.mode }
-
-    it "returns allocations" do
-      expect(mode).to eq("allocations")
-    end
-  end
-
-  describe "#alloc?" do
-    let(:alloc) { subject.alloc? }
-
-    it "returns true" do
-      expect(alloc).to be_truthy
-    end
-  end
-
-  describe "#rss?" do
-    let(:rss) { subject.rss? }
-
-    it "returns false" do
-      expect(rss).to be_falsey
-    end
-  end
 end
 
 describe TestProf::MemoryProf::RssTracker do
@@ -220,30 +196,6 @@ describe TestProf::MemoryProf::RssTracker do
 
     it "returns the current rss" do
       expect(track).to eq(201097216)
-    end
-  end
-
-  describe "#mode" do
-    let(:mode) { subject.mode }
-
-    it "returns rss" do
-      expect(mode).to eq("RSS")
-    end
-  end
-
-  describe "#alloc?" do
-    let(:alloc) { subject.alloc? }
-
-    it "returns false" do
-      expect(alloc).to be_falsey
-    end
-  end
-
-  describe "#rss?" do
-    let(:rss) { subject.rss? }
-
-    it "returns true" do
-      expect(rss).to be_truthy
     end
   end
 end

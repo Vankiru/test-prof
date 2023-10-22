@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "test_prof/memory_prof/printer"
-
 module TestProf
   module MemoryProf
     class RSpecListener
@@ -16,7 +14,7 @@ module TestProf
 
       def initialize
         @tracker = MemoryProf.tracker
-        @printer = Printer.new(tracker)
+        @printer = MemoryProf.printer(tracker)
 
         @tracker.start
       end

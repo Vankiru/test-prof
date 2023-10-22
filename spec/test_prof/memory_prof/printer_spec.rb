@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe TestProf::MemoryProf::Printer do
+shared_examples "TestProf::MemoryProf::Printer" do
   subject { described_class.new(tracker) }
 
   let(:groups) do
@@ -26,213 +26,222 @@ describe TestProf::MemoryProf::Printer do
     allow(tracker).to receive(:groups).and_return(groups)
     allow(tracker).to receive(:examples).and_return(examples)
   end
+end
+
+describe TestProf::MemoryProf::AllocPrinter do
+  include_examples "TestProf::MemoryProf::Printer"
+
+  let(:tracker) { TestProf::MemoryProf::AllocTracker.new(3) }
 
   describe "#print" do
     let(:print) { subject.print }
 
-    context "when mode is :alloc" do
-      let(:tracker) { TestProf::MemoryProf::AllocTracker.new(3) }
 
-      context "and there are both groups and examples" do
-        let(:message) do
-          <<~MESSAGE
-            MemoryProf results
-            
-            Total allocations: 500
-            
-            Top 3 groups (by allocations):
-            
-            AnswersController (./spec/controllers/answers_controller_spec.rb:3) – +200 (40.0%)
-            #publish (./spec/nodels/question_spec.rb:179) – +100 (20.0%)
-            when email an...me are present (./spec/lib/import_spec.rb:34) – +50 (10.0%)
-            
-            Top 3 examples (by allocations):
-            
-            returns nil (./spec/models/reports_spec.rb:57) – +75 (15.0%)
-            searches users by email (./spec/searches/users_search_spec.rb:15) – +50 (10.0%)
-            calculates th...ber of answers (./spec/lib/stats_spec.rb:44) – +25 (5.0%)
+    context "and there are both groups and examples" do
+      let(:message) do
+        <<~MESSAGE
+          MemoryProf results
+          
+          Total allocations: 500
+          
+          Top 3 groups (by allocations):
+          
+          AnswersController (./spec/controllers/answers_controller_spec.rb:3) – +200 (40.0%)
+          #publish (./spec/nodels/question_spec.rb:179) – +100 (20.0%)
+          when email an...me are present (./spec/lib/import_spec.rb:34) – +50 (10.0%)
+          
+          Top 3 examples (by allocations):
+          
+          returns nil (./spec/models/reports_spec.rb:57) – +75 (15.0%)
+          searches users by email (./spec/searches/users_search_spec.rb:15) – +50 (10.0%)
+          calculates th...ber of answers (./spec/lib/stats_spec.rb:44) – +25 (5.0%)
 
-          MESSAGE
-        end
-
-        it "prints results for groups and examples" do
-          print
-
-          expect(subject).to have_received(:log).with(:info, message)
-        end
+        MESSAGE
       end
 
-      context "and there are no examples" do
-        let(:examples) { [] }
+      it "prints results for groups and examples" do
+        print
 
-        let(:message) {
-          <<~MESSAGE
-            MemoryProf results
-            
-            Total allocations: 500
-          
-            Top 3 groups (by allocations):
-          
-            AnswersController (./spec/controllers/answers_controller_spec.rb:3) – +200 (40.0%)
-            #publish (./spec/nodels/question_spec.rb:179) – +100 (20.0%)
-            when email an...me are present (./spec/lib/import_spec.rb:34) – +50 (10.0%)
-
-          MESSAGE
-        }
-
-        it "prints results for groups only" do
-          print
-
-          expect(subject).to have_received(:log).with(:info, message)
-        end
-      end
-
-      context "and there are no groups" do
-        let(:groups) { [] }
-
-        let(:message) {
-          <<~MESSAGE
-            MemoryProf results
-            
-            Total allocations: 500
-          
-            Top 3 examples (by allocations):
-          
-            returns nil (./spec/models/reports_spec.rb:57) – +75 (15.0%)
-            searches users by email (./spec/searches/users_search_spec.rb:15) – +50 (10.0%)
-            calculates th...ber of answers (./spec/lib/stats_spec.rb:44) – +25 (5.0%)
-
-          MESSAGE
-        }
-
-        it "prints results for examples only" do
-          print
-
-          expect(subject).to have_received(:log).with(:info, message)
-        end
-      end
-
-      context "and there are no groups or examples" do
-        let(:groups) { [] }
-        let(:examples) { [] }
-
-        let(:message) {
-          <<~MESSAGE
-            MemoryProf results
-            
-            Total allocations: 500
-
-          MESSAGE
-        }
-
-        it "prints results for examples only" do
-          print
-
-          expect(subject).to have_received(:log).with(:info, message)
-        end
+        expect(subject).to have_received(:log).with(:info, message)
       end
     end
 
-    context "when mode is :rss" do
-      let(:tracker) { TestProf::MemoryProf::RssTracker.new(3) }
+    context "and there are no examples" do
+      let(:examples) { [] }
 
-      context "and there are both groups and examples" do
-        let(:message) do
-          <<~MESSAGE
-            MemoryProf results
-            
-            Final RSS: 500B
-            
-            Top 3 groups (by RSS):
-            
-            AnswersController (./spec/controllers/answers_controller_spec.rb:3) – +200B (40.0%)
-            #publish (./spec/nodels/question_spec.rb:179) – +100B (20.0%)
-            when email an...me are present (./spec/lib/import_spec.rb:34) – +50B (10.0%)
-            
-            Top 3 examples (by RSS):
-            
-            returns nil (./spec/models/reports_spec.rb:57) – +75B (15.0%)
-            searches users by email (./spec/searches/users_search_spec.rb:15) – +50B (10.0%)
-            calculates th...ber of answers (./spec/lib/stats_spec.rb:44) – +25B (5.0%)
+      let(:message) {
+        <<~MESSAGE
+          MemoryProf results
+          
+          Total allocations: 500
+        
+          Top 3 groups (by allocations):
+        
+          AnswersController (./spec/controllers/answers_controller_spec.rb:3) – +200 (40.0%)
+          #publish (./spec/nodels/question_spec.rb:179) – +100 (20.0%)
+          when email an...me are present (./spec/lib/import_spec.rb:34) – +50 (10.0%)
 
-          MESSAGE
-        end
+        MESSAGE
+      }
 
-        it "prints results for groups and examples" do
-          print
+      it "prints results for groups only" do
+        print
 
-          expect(subject).to have_received(:log).with(:info, message)
-        end
+        expect(subject).to have_received(:log).with(:info, message)
+      end
+    end
+
+    context "and there are no groups" do
+      let(:groups) { [] }
+
+      let(:message) {
+        <<~MESSAGE
+          MemoryProf results
+          
+          Total allocations: 500
+        
+          Top 3 examples (by allocations):
+        
+          returns nil (./spec/models/reports_spec.rb:57) – +75 (15.0%)
+          searches users by email (./spec/searches/users_search_spec.rb:15) – +50 (10.0%)
+          calculates th...ber of answers (./spec/lib/stats_spec.rb:44) – +25 (5.0%)
+
+        MESSAGE
+      }
+
+      it "prints results for examples only" do
+        print
+
+        expect(subject).to have_received(:log).with(:info, message)
+      end
+    end
+
+    context "and there are no groups or examples" do
+      let(:groups) { [] }
+      let(:examples) { [] }
+
+      let(:message) {
+        <<~MESSAGE
+          MemoryProf results
+          
+          Total allocations: 500
+
+        MESSAGE
+      }
+
+      it "prints results for examples only" do
+        print
+
+        expect(subject).to have_received(:log).with(:info, message)
+      end
+    end
+  end
+end
+
+describe TestProf::MemoryProf::RssPrinter do
+  include_examples "TestProf::MemoryProf::Printer"
+
+  let(:tracker) { TestProf::MemoryProf::AllocTracker.new(3) }
+
+  describe "#print" do
+    let(:print) { subject.print }
+
+    context "and there are both groups and examples" do
+      let(:message) do
+        <<~MESSAGE
+          MemoryProf results
+          
+          Final RSS: 500B
+          
+          Top 3 groups (by RSS):
+          
+          AnswersController (./spec/controllers/answers_controller_spec.rb:3) – +200B (40.0%)
+          #publish (./spec/nodels/question_spec.rb:179) – +100B (20.0%)
+          when email an...me are present (./spec/lib/import_spec.rb:34) – +50B (10.0%)
+          
+          Top 3 examples (by RSS):
+          
+          returns nil (./spec/models/reports_spec.rb:57) – +75B (15.0%)
+          searches users by email (./spec/searches/users_search_spec.rb:15) – +50B (10.0%)
+          calculates th...ber of answers (./spec/lib/stats_spec.rb:44) – +25B (5.0%)
+
+        MESSAGE
       end
 
-      context "and there are no examples" do
-        let(:examples) { [] }
+      it "prints results for groups and examples" do
+        print
 
-        let(:message) {
-          <<~MESSAGE
-            MemoryProf results
-            
-            Final RSS: 500B
-          
-            Top 3 groups (by RSS):
-          
-            AnswersController (./spec/controllers/answers_controller_spec.rb:3) – +200B (40.0%)
-            #publish (./spec/nodels/question_spec.rb:179) – +100B (20.0%)
-            when email an...me are present (./spec/lib/import_spec.rb:34) – +50B (10.0%)
-
-          MESSAGE
-        }
-
-        it "prints results for groups only" do
-          print
-
-          expect(subject).to have_received(:log).with(:info, message)
-        end
+        expect(subject).to have_received(:log).with(:info, message)
       end
+    end
 
-      context "and there are no groups" do
-        let(:groups) { [] }
+    context "and there are no examples" do
+      let(:examples) { [] }
 
-        let(:message) {
-          <<~MESSAGE
-            MemoryProf results
-            
-            Final RSS: 500B
+      let(:message) {
+        <<~MESSAGE
+          MemoryProf results
           
-            Top 3 examples (by RSS):
-          
-            returns nil (./spec/models/reports_spec.rb:57) – +75B (15.0%)
-            searches users by email (./spec/searches/users_search_spec.rb:15) – +50B (10.0%)
-            calculates th...ber of answers (./spec/lib/stats_spec.rb:44) – +25B (5.0%)
+          Final RSS: 500B
+        
+          Top 3 groups (by RSS):
+        
+          AnswersController (./spec/controllers/answers_controller_spec.rb:3) – +200B (40.0%)
+          #publish (./spec/nodels/question_spec.rb:179) – +100B (20.0%)
+          when email an...me are present (./spec/lib/import_spec.rb:34) – +50B (10.0%)
 
-          MESSAGE
-        }
+        MESSAGE
+      }
 
-        it "prints results for examples only" do
-          print
+      it "prints results for groups only" do
+        print
 
-          expect(subject).to have_received(:log).with(:info, message)
-        end
+        expect(subject).to have_received(:log).with(:info, message)
       end
+    end
 
-      context "and there are no groups or examples" do
-        let(:groups) { [] }
-        let(:examples) { [] }
+    context "and there are no groups" do
+      let(:groups) { [] }
 
-        let(:message) {
-          <<~MESSAGE
-            MemoryProf results
-            
-            Final RSS: 500B
+      let(:message) {
+        <<~MESSAGE
+          MemoryProf results
+          
+          Final RSS: 500B
+        
+          Top 3 examples (by RSS):
+        
+          returns nil (./spec/models/reports_spec.rb:57) – +75B (15.0%)
+          searches users by email (./spec/searches/users_search_spec.rb:15) – +50B (10.0%)
+          calculates th...ber of answers (./spec/lib/stats_spec.rb:44) – +25B (5.0%)
 
-          MESSAGE
-        }
+        MESSAGE
+      }
 
-        it "prints results for examples only" do
-          print
+      it "prints results for examples only" do
+        print
 
-          expect(subject).to have_received(:log).with(:info, message)
-        end
+        expect(subject).to have_received(:log).with(:info, message)
+      end
+    end
+
+    context "and there are no groups or examples" do
+      let(:groups) { [] }
+      let(:examples) { [] }
+
+      let(:message) {
+        <<~MESSAGE
+          MemoryProf results
+          
+          Final RSS: 500B
+
+        MESSAGE
+      }
+
+      it "prints results for examples only" do
+        print
+
+        expect(subject).to have_received(:log).with(:info, message)
       end
     end
   end

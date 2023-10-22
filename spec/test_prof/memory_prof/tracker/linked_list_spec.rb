@@ -61,12 +61,35 @@ describe TestProf::MemoryProf::Tracker::LinkedListNode do
 
   describe "#total_memory" do
     before do
-      subject.instance_variable_set("@memory_at_start", 100)
-      subject.instance_variable_set("@memory_at_finish", 200)
+      subject.instance_variable_set("@memory_at_start", memory_at_start)
+      subject.instance_variable_set("@memory_at_finish", memory_at_finish)
     end
 
-    it "calculates the difference between memory_at_finish and memory_at_start" do
-      expect(subject.total_memory).to eq(100)
+    context "when memory_at_finish is nil" do
+      let(:memory_at_start) { 100 }
+      let(:memory_at_finish) { nil }
+
+      it "returns 0" do
+        expect(subject.total_memory).to eq(0)
+      end
+    end
+
+    context "when memory_at_start > memory_at_finish" do
+      let(:memory_at_start) { 200 }
+      let(:memory_at_finish) { 100 }
+
+      it "returns 0" do
+        expect(subject.total_memory).to eq(0)
+      end
+    end
+
+    context "when memory_at_start < memory_at_finish" do
+      let(:memory_at_start) { 100 }
+      let(:memory_at_finish) { 200 }
+
+      it "calculates the difference between memory_at_finish and memory_at_start" do
+        expect(subject.total_memory).to eq(100)
+      end
     end
   end
 

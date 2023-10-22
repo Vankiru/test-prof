@@ -81,12 +81,15 @@ module TestProf
           @item = item
           @previous = previous
 
-          @memory_at_start = memory_at_start
+          @memory_at_start = memory_at_start || 0
           @memory_at_finish = nil
           @nested_memory = 0
         end
 
         def total_memory
+          return 0 if memory_at_finish.nil?
+          return 0 if memory_at_start > memory_at_finish
+
           memory_at_finish - memory_at_start
         end
 

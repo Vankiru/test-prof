@@ -29,18 +29,14 @@ module TestProf
       attr_reader :tracker
 
       def print_total
-        if tracker.alloc?
-          "Total allocations: #{tracker.total_memory}\n\n"
-        else
-          "Final RSS: #{number_to_human(tracker.total_memory)}\n\n"
-        end
+        raise "Implement in a sub printer"
       end
 
       def print_block(name, items)
         return if items.empty?
 
         <<~GROUP
-          Top #{tracker.top_count} #{name} (by #{tracker.mode}):
+          Top #{tracker.top_count} #{name} (by #{mode}):
 
           #{print_items(items)}
         GROUP
@@ -57,12 +53,12 @@ module TestProf
         messages.join
       end
 
+      def mode
+        raise "Implement in a sub printer"
+      end
+
       def memory_amount(item)
-        if tracker.rss?
-          number_to_human(item[:memory])
-        else
-          item[:memory]
-        end
+        raise "Implement in a sub printer"
       end
 
       def memory_percentage(item)
@@ -71,6 +67,38 @@ module TestProf
 
       def number_to_human(value)
         NumberToHuman.convert(value)
+      end
+    end
+
+    class AllocPrinter < Printer
+      private
+
+      def mode
+        "allocations"
+      end
+
+      def print_total
+        "Total allocations: #{tracker.total_memory}\n\n"
+      end
+
+      def memory_amount(item)
+        item[:memory]
+      end
+    end
+
+    class RssPrinter < Printer
+      private
+
+      def mode
+        "RSS"
+      end
+
+      def print_total
+        "Final RSS: #{number_to_human(tracker.total_memory)}\n\n"
+      end
+
+      def memory_amount(item)
+        number_to_human(item[:memory])
       end
     end
   end

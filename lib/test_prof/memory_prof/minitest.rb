@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "minitest/base_reporter"
-require "test_prof/memory_prof/printer"
 
 module Minitest
   module TestProf
@@ -14,7 +13,7 @@ module Minitest
         configure_profiler(options)
 
         @tracker = ::TestProf::MemoryProf.tracker
-        @printer = ::TestProf::MemoryProf::Printer.new(tracker)
+        @printer = ::TestProf::MemoryProf.printer(tracker)
 
         @current_example = nil
       end

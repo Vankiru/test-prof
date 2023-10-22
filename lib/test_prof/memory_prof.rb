@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_prof/memory_prof/tracker"
+require "test_prof/memory_prof/printer"
 
 module TestProf
   # MemoryProf can help in detecting test examples causing memory spikes.
@@ -42,6 +43,16 @@ module TestProf
     end
 
     class << self
+      TRACKERS = {
+        alloc: AllocTracker,
+        rss: RssTracker
+      }.freeze
+
+      PRINTERS = {
+        alloc: AllocPrinter,
+        rss: RssPrinter
+      }.freeze
+
       def config
         @config ||= Configuration.new
       end
@@ -51,12 +62,13 @@ module TestProf
       end
 
       def tracker
-        case config.mode
-        when :alloc
-          AllocTracker.new(config.top_count)
-        when :rss
-          RssTracker.new(config.top_count)
-        end
+        tracker = TRACKERS[config.mode]
+        tracker.new(config.top_count)
+      end
+
+      def printer(tracker)
+        printer = PRINTERS[config.mode]
+        printer.new(tracker)
       end
     end
   end

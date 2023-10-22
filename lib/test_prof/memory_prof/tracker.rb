@@ -56,35 +56,11 @@ module TestProf
       def track
         GC.stat[:total_allocated_objects]
       end
-
-      def mode
-        "allocations"
-      end
-
-      def alloc?
-        true
-      end
-
-      def rss?
-        false
-      end
     end
 
     class RssTracker < Tracker
       def track
         `ps -o rss -p #{Process.pid}`.strip.split.last.to_i * 1024
-      end
-
-      def mode
-        "RSS"
-      end
-
-      def alloc?
-        false
-      end
-
-      def rss?
-        true
       end
     end
   end
