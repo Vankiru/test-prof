@@ -163,14 +163,18 @@ describe TestProf::MemoryProf::AllocTracker do
   it_behaves_like "TestProf::MemoryProf::Tracker"
 
   describe "#track" do
-    let(:track) { subject.track }
-
     before do
       allow(GC).to receive(:stat).and_return({total_allocated_objects: 100})
     end
 
     it "returns the current number of allocations" do
-      expect(track).to eq(100)
+      expect(subject.track).to eq(100)
+    end
+  end
+
+  describe "#supported?" do
+    it "returns true" do
+      expect(subject.supported?).to be_truthy
     end
   end
 end
@@ -178,24 +182,33 @@ end
 describe TestProf::MemoryProf::RssTracker do
   subject { described_class.new(5) }
 
+  let(:tool) { instance_double(TestProf::MemoryProf::Tracker::Rss::PS, track: 100) }
+
+  before do
+    allow(TestProf::MemoryProf::Tracker::Rss).to receive(:tool).and_return(tool)
+  end
+
   it_behaves_like "TestProf::MemoryProf::Tracker"
 
   describe "#track" do
-    let(:track) { subject.track }
-
-    before do
-      allow(subject).to receive(:`).and_return("   RSS\n196384")
-      allow(Process).to receive(:pid).and_return(100)
-    end
-
-    it "retrieves rss via ps" do
-      track
-
-      expect(subject).to have_received(:`).with("ps -o rss -p 100")
-    end
-
     it "returns the current rss" do
-      expect(track).to eq(201097216)
+      expect(subject.track).to eq(100)
+    end
+  end
+
+  describe "#supported?" do
+    context "when the host OS is supported" do
+      it "returns true" do
+        expect(subject.supported?).to be_truthy
+      end
+    end
+
+    context "when the host OS is not supported" do
+      let(:tool) { nil }
+
+      it "returns false" do
+        expect(subject.supported?).to be_falsey
+      end
     end
   end
 end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_prof/memory_prof/tracker/linked_list"
+require "test_prof/memory_prof/tracker/rss"
 
 module TestProf
   module MemoryProf
@@ -18,6 +19,8 @@ module TestProf
       attr_reader :top_count, :examples, :groups, :total_memory, :list
 
       def initialize(top_count)
+        raise "Your OS is not supported. Please refer to the list of supported OS" unless supported?
+
         @top_count = top_count
 
         @examples = Utils::SizedOrderedSet.new(top_count, sort_by: :memory)
@@ -56,11 +59,25 @@ module TestProf
       def track
         GC.stat[:total_allocated_objects]
       end
+
+      def supported?
+        true
+      end
     end
 
     class RssTracker < Tracker
+      def initialize(top_count)
+        @rss_tool = Rss.tool
+
+        super
+      end
+
       def track
-        `ps -o rss -p #{Process.pid}`.strip.split.last.to_i * 1024
+        @rss_tool.track
+      end
+
+      def supported?
+        !!@rss_tool
       end
     end
   end
