@@ -56,6 +56,7 @@ module TestProf
         TOOLS = {
           linux: ProcFS,
           macosx: PS,
+          unix: PS,
           windows: Wmic
         }
 

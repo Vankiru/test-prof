@@ -79,8 +79,10 @@ describe TestProf::MemoryProf::Tracker::Rss::ProcFS do
 
   describe "#track" do
     before do
-      io = instance_double(IO, seek: nil, gets: "")
+      io = instance_double(IO, seek: nil, gets: "46441 196384 1804 1 0 24133 0\n")
+
       allow(File).to receive(:open).and_return(io)
+      subject.instance_variable_set("@page_size", 1024)
     end
 
     it "retrieves rss via proc statm" do

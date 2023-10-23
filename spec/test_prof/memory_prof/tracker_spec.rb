@@ -206,8 +206,8 @@ describe TestProf::MemoryProf::RssTracker do
     context "when the host OS is not supported" do
       let(:tool) { nil }
 
-      it "returns false" do
-        expect(subject.supported?).to be_falsey
+      it "raises an error" do
+        expect{ subject }.to raise_error("Your OS is not supported. Please refer to the list of supported OS")
       end
     end
   end
