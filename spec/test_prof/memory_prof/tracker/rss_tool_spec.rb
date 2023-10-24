@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe TestProf::MemoryProf::Tracker::Rss do
+describe TestProf::MemoryProf::Tracker::RssTool do
   subject { described_class }
 
   describe ".tool" do
@@ -74,7 +74,7 @@ describe TestProf::MemoryProf::Tracker::Rss do
   end
 end
 
-describe TestProf::MemoryProf::Tracker::Rss::ProcFS do
+describe TestProf::MemoryProf::Tracker::RssTool::ProcFS do
   subject { described_class.new }
 
   describe "#track" do
@@ -97,7 +97,7 @@ describe TestProf::MemoryProf::Tracker::Rss::ProcFS do
   end
 end
 
-describe TestProf::MemoryProf::Tracker::Rss::PS do
+describe TestProf::MemoryProf::Tracker::RssTool::PS do
   subject { described_class.new }
 
   describe "#track" do
@@ -117,22 +117,43 @@ describe TestProf::MemoryProf::Tracker::Rss::PS do
   end
 end
 
-describe TestProf::MemoryProf::Tracker::Rss::Wmic do
+describe TestProf::MemoryProf::Tracker::RssTool::Windows do
   subject { described_class.new }
 
   describe "#track" do
     before do
-      allow(subject).to receive(:`).and_return("WorkingSetSize \n\n196384 \n\n\n")
+      allow_any_instance_of(described_class).to receive(:powershell_installed?).and_return(powershell_installed)
+      allow(subject).to receive(:`).and_return(result)
     end
 
-    it "retrieves rss via wmic" do
-      subject.track
+    context "when powershell is installed" do
+      let(:powershell_installed) { true }
+      let(:result) { "\n      WS\n      --\n201097216\n\n\n" }
 
-      expect(subject).to have_received(:`).with(/wmic process where processid=\d+ get WorkingSetSize/)
+      it "retrieves rss via Get-Process" do
+        subject.track
+  
+        expect(subject).to have_received(:`).with(/powershell -Command "Get-Process -Id \d+ | select WS"/)
+      end
+  
+      it "returns the current rss" do
+        expect(subject.track).to eq(201097216)
+      end
     end
 
-    it "returns the current rss" do
-      expect(subject.track).to eq(201097216)
+    context "when powershell is not installed" do
+      let(:powershell_installed) { false }
+      let(:result) { "WorkingSetSize  \n\n201097216        \n\n\n\n" }
+
+      it "retrieves rss via wmic" do
+        subject.track
+  
+        expect(subject).to have_received(:`).with(/wmic process where processid=\d+ get WorkingSetSize/)
+      end
+  
+      it "returns the current rss" do
+        expect(subject.track).to eq(201097216)
+      end
     end
   end
 end

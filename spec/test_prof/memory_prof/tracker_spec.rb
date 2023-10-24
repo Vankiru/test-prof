@@ -182,10 +182,10 @@ end
 describe TestProf::MemoryProf::RssTracker do
   subject { described_class.new(5) }
 
-  let(:tool) { instance_double(TestProf::MemoryProf::Tracker::Rss::PS, track: 100) }
+  let(:tool) { instance_double(TestProf::MemoryProf::Tracker::RssTool::PS, track: 100) }
 
   before do
-    allow(TestProf::MemoryProf::Tracker::Rss).to receive(:tool).and_return(tool)
+    allow(TestProf::MemoryProf::Tracker::RssTool).to receive(:tool).and_return(tool)
   end
 
   it_behaves_like "TestProf::MemoryProf::Tracker"

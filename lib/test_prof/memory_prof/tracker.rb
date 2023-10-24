@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "test_prof/memory_prof/tracker/linked_list"
-require "test_prof/memory_prof/tracker/rss"
+require "test_prof/memory_prof/tracker/rss_tool"
 
 module TestProf
   module MemoryProf
@@ -67,7 +67,7 @@ module TestProf
 
     class RssTracker < Tracker
       def initialize(top_count)
-        @rss_tool = Rss.tool
+        @rss_tool = RssTool.tool
 
         super
       end

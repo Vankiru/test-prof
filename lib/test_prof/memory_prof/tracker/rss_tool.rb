@@ -5,7 +5,7 @@ require 'rbconfig'
 module TestProf
   module MemoryProf
     class Tracker
-      module Rss
+      module RssTool
         class ProcFS
           def initialize
             @statm = File.open("/proc/#{$$}/statm", "r")
@@ -41,15 +41,29 @@ module TestProf
           end
         end
 
-        class Wmic
+        class Windows
+          def initialize
+            @command = powershell_installed? ? get_process : wmic
+          end
+        
           def track
-            fetch.strip.split.last.to_i * 1024
+            `#{@command}`.strip.split.last.to_i
           end
 
           private
 
-          def fetch
-            `wmic process where processid=#{$$} get WorkingSetSize`
+          def powershell_installed?
+            `where powershell` =~ /powershell.exe/
+          end
+
+          def get_process
+            "powershell -Command \"Get-Process -Id #{$$} | select WS\""
+          end
+
+          # WMIC is deprecated as of Windows 10, version 21H1:
+          # https://learn.microsoft.com/en-us/windows/win32/wmisdk/wmic
+          def wmic
+            "wmic process where processid=#{$$} get WorkingSetSize"
           end
         end
 
@@ -57,8 +71,8 @@ module TestProf
           linux: ProcFS,
           macosx: PS,
           unix: PS,
-          windows: Wmic
-        }
+          windows: Windows
+        }.freeze
 
         class << self
           def tool

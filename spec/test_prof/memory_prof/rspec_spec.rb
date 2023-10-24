@@ -25,7 +25,8 @@ describe TestProf::MemoryProf::RSpecListener do
   end
 
   before do
-    allow(tracker).to receive(:start)
+    allow_any_instance_of(TestProf::MemoryProf::Tracker).to receive(:start)
+
     allow(tracker).to receive(:finish)
     allow(tracker).to receive(:example_started)
     allow(tracker).to receive(:example_finished)
