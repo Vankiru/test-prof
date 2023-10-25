@@ -25,14 +25,17 @@ describe TestProf::MemoryProf::RSpecListener do
   end
 
   before do
-    allow_any_instance_of(TestProf::MemoryProf::Tracker).to receive(:start)
+    tracker = instance_double(
+      TestProf::MemoryProf::Tracker,
+      start: nil,
+      finish: nil,
+      example_started: nil,
+      example_finished: nil,
+      group_started: nil,
+      group_finished: nil
+    )
 
-    allow(tracker).to receive(:finish)
-    allow(tracker).to receive(:example_started)
-    allow(tracker).to receive(:example_finished)
-    allow(tracker).to receive(:group_started)
-    allow(tracker).to receive(:group_finished)
-
+    allow(TestProf::MemoryProf).to receive(:tracker).and_return(tracker)
     allow(printer).to receive(:print)
   end
 

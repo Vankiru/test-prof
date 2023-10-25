@@ -73,3 +73,12 @@ or with CLI options for Minitest:
 # Run a specific file using CLI option
 ruby test/my_super_test.rb --mem-prof=rs --mem-prof-top-count=10
 ```
+
+## Supported OS
+
+Since RSS depends on the OS, MemoryProf uses different tools to retrieve it:
+* Linux – `/proc/$pid/statm` file,
+* macOS, Solaris, BSD – `ps`,
+* Windows – `Get-Process` if PowerShell is installed, `wmic` otherwise.
+
+If you are using Windows, please note that WMIC is deprecated as of Windows 10, version 21H1: https://learn.microsoft.com/en-us/windows/win32/wmisdk/wmic. Please install PowerShell if you have not done it yet.

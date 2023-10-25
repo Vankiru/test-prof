@@ -27,7 +27,12 @@ describe TestProf::MemoryProf::Tracker::RssTool do
 
   describe ".os_type" do
     before do
+      @original_os = RbConfig::CONFIG["host_os"]
       RbConfig::CONFIG["host_os"] = host_os
+    end
+
+    after do
+      RbConfig::CONFIG["host_os"] = @original_os
     end
 
     context "when the host OS is Linux" do
