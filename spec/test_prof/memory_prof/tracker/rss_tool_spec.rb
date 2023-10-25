@@ -7,7 +7,7 @@ describe TestProf::MemoryProf::Tracker::RssTool do
     before do
       allow(subject).to receive(:os_type).and_return(os_type)
     end
-  
+
     context "when an OS is supported" do
       let(:os_type) { :macosx }
 
@@ -22,14 +22,14 @@ describe TestProf::MemoryProf::Tracker::RssTool do
       it "returns nil" do
         expect(subject.tool).to eq(nil)
       end
-    end  
+    end
   end
 
   describe ".os_type" do
     before do
-      RbConfig::CONFIG['host_os'] = host_os
+      RbConfig::CONFIG["host_os"] = host_os
     end
-  
+
     context "when the host OS is Linux" do
       let(:host_os) { "linux" }
 
@@ -132,10 +132,10 @@ describe TestProf::MemoryProf::Tracker::RssTool::Windows do
 
       it "retrieves rss via Get-Process" do
         subject.track
-  
+
         expect(subject).to have_received(:`).with(/powershell -Command "Get-Process -Id \d+ | select WS"/)
       end
-  
+
       it "returns the current rss" do
         expect(subject.track).to eq(201097216)
       end
@@ -147,10 +147,10 @@ describe TestProf::MemoryProf::Tracker::RssTool::Windows do
 
       it "retrieves rss via wmic" do
         subject.track
-  
+
         expect(subject).to have_received(:`).with(/wmic process where processid=\d+ get WorkingSetSize/)
       end
-  
+
       it "returns the current rss" do
         expect(subject.track).to eq(201097216)
       end

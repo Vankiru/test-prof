@@ -36,7 +36,6 @@ describe TestProf::MemoryProf::AllocPrinter do
   describe "#print" do
     let(:print) { subject.print }
 
-
     context "and there are both groups and examples" do
       let(:message) do
         <<~MESSAGE

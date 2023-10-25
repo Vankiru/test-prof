@@ -12,7 +12,7 @@ describe TestProf::MemoryProf do
 
     describe "#mode=" do
       let(:set_mode) { config.mode = value }
-      
+
       context "when value is alloc" do
         let(:value) { "alloc" }
 

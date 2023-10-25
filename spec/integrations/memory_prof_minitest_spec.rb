@@ -13,11 +13,11 @@ describe "MemoryProf Minitest" do
 
     expect(output).to include("Top 5 examples (by RSS):")
 
-    expect(output).to match(/allocates a lot \(\.\/memory_prof_fixture.rb:18\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates some \(\.\/memory_prof_fixture.rb:13\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates a few \(\.\/memory_prof_fixture.rb:8\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates a bit \(\.\/memory_prof_fixture.rb:29\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates nothing \(\.\/memory_prof_fixture.rb:25\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 10_000 objects \(\.\/memory_prof_fixture.rb:16\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 1000 objects \(\.\/memory_prof_fixture.rb:12\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 500 objects \(\.\/memory_prof_fixture.rb:8\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 100 objects \(\.\/memory_prof_fixture.rb:25\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates nothing \(\.\/memory_prof_fixture.rb:22\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
   end
 
   specify "in RSS mode", :aggregate_failures do
@@ -28,11 +28,11 @@ describe "MemoryProf Minitest" do
 
     expect(output).to include("Top 5 examples (by RSS):")
 
-    expect(output).to match(/allocates a lot \(\.\/memory_prof_fixture.rb:18\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates some \(\.\/memory_prof_fixture.rb:13\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates a few \(\.\/memory_prof_fixture.rb:8\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates a bit \(\.\/memory_prof_fixture.rb:29\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates nothing \(\.\/memory_prof_fixture.rb:25\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 10_000 objects \(\.\/memory_prof_fixture.rb:16\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 1000 objects \(\.\/memory_prof_fixture.rb:12\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 500 objects \(\.\/memory_prof_fixture.rb:8\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 100 objects \(\.\/memory_prof_fixture.rb:25\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates nothing \(\.\/memory_prof_fixture.rb:22\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
   end
 
   specify "in allocations mode", :aggregate_failures do
@@ -43,11 +43,11 @@ describe "MemoryProf Minitest" do
 
     expect(output).to include("Top 5 examples (by allocations):")
 
-    expect(output).to match(/allocates a lot \(\.\/memory_prof_fixture.rb:18\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates some \(\.\/memory_prof_fixture.rb:13\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates a few \(\.\/memory_prof_fixture.rb:8\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates a bit \(\.\/memory_prof_fixture.rb:29\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates nothing \(\.\/memory_prof_fixture.rb:25\) – \+#{number_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 10_000 objects \(\.\/memory_prof_fixture.rb:16\) – \+#{number_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 1000 objects \(\.\/memory_prof_fixture.rb:12\) – \+#{number_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 500 objects \(\.\/memory_prof_fixture.rb:8\) – \+#{number_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 100 objects \(\.\/memory_prof_fixture.rb:25\) – \+#{number_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates nothing \(\.\/memory_prof_fixture.rb:22\) – \+#{number_regex} \(#{percent_regex}\)/)
   end
 
   specify "with top_count", :aggregate_failures do
@@ -58,8 +58,8 @@ describe "MemoryProf Minitest" do
 
     expect(output).to include("Top 3 examples (by allocations):")
 
-    expect(output).to match(/allocates a lot \(\.\/memory_prof_fixture.rb:18\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates some \(\.\/memory_prof_fixture.rb:13\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates a few \(\.\/memory_prof_fixture.rb:8\) – \+#{number_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 10_000 objects \(\.\/memory_prof_fixture.rb:16\) – \+#{number_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 1000 objects \(\.\/memory_prof_fixture.rb:12\) – \+#{number_regex} \(#{percent_regex}\)/)
+    expect(output).to match(/allocates 500 objects \(\.\/memory_prof_fixture.rb:8\) – \+#{number_regex} \(#{percent_regex}\)/)
   end
 end

@@ -207,7 +207,7 @@ describe TestProf::MemoryProf::RssTracker do
       let(:tool) { nil }
 
       it "raises an error" do
-        expect{ subject }.to raise_error("Your OS is not supported. Please refer to the list of supported OS")
+        expect { subject }.to raise_error("Your OS is not supported. Please refer to the list of supported OS")
       end
     end
   end

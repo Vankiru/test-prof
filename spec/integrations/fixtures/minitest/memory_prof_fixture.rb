@@ -5,28 +5,24 @@ require "test-prof"
 require "securerandom"
 
 describe "First Allocations" do
-  it "allocates a few" do
+  it "allocates 500 objects" do
     500.times.map { SecureRandom.hex }
-    assert true
   end
 
-  it "allocates some" do
+  it "allocates 1000 objects" do
     1000.times.map { SecureRandom.hex }
-    assert true
   end
 
-  it "allocates a lot" do
+  it "allocates 10_000 objects" do
     10_000.times.map { SecureRandom.hex }
-    assert true
   end
 end
 
 describe "Second Allocations" do
   it "allocates nothing" do
-    assert true
   end
 
-  it "allocates a bit" do
+  it "allocates 100 objects" do
     100.times.map { SecureRandom.hex }
     assert true
   end

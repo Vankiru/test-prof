@@ -4,50 +4,44 @@ require "test-prof"
 require "securerandom"
 
 describe "Examples allocations" do
-  it "allocates a few" do
+  it "allocates 500 objects" do
     500.times.map { SecureRandom.hex }
-    expect(true).to eq true
   end
 
-  it "allocates some" do
+  it "allocates 1000 objects" do
     1000.times.map { SecureRandom.hex }
-    expect(true).to eq true
   end
 
-  it "allocates a lot" do
+  it "allocates 10_000 objects" do
     10_000.times.map { SecureRandom.hex }
-    expect(true).to eq true
   end
 end
 
 describe "Groups Allocations" do
-  context "with few allocations" do
+  context "with 500 allocations" do
     before(:context) do
       @array = 500.times.map { SecureRandom.hex }
     end
 
-    it "does something with no allocations" do
-      expect(true).to eq true
+    it "does not allocate anything" do
     end
   end
 
-  context "with some allocations" do
+  context "with 1000 allocations" do
     before(:context) do
       @array = 1000.times.map { SecureRandom.hex }
     end
 
-    it "does something with few allocations" do
-      expect(true).to eq true
+    it "does not allocate anything" do
     end
   end
 
-  context "with many allocations" do
+  context "with 10_000 allocations" do
     before(:context) do
       @array = 10_000.times.map { SecureRandom.hex }
     end
 
-    it "does something with many allocations" do
-      expect(true).to eq true
+    it "does not allocate anything" do
     end
   end
 end
