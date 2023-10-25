@@ -122,43 +122,22 @@ describe TestProf::MemoryProf::Tracker::RssTool::PS do
   end
 end
 
-describe TestProf::MemoryProf::Tracker::RssTool::Windows do
+describe TestProf::MemoryProf::Tracker::RssTool::GetProcess do
   subject { described_class.new }
 
   describe "#track" do
     before do
-      allow_any_instance_of(described_class).to receive(:powershell_installed?).and_return(powershell_installed)
-      allow(subject).to receive(:`).and_return(result)
+      allow(subject).to receive(:`).and_return("\n      WS\n      --\n201097216\n\n\n")
     end
 
-    context "when powershell is installed" do
-      let(:powershell_installed) { true }
-      let(:result) { "\n      WS\n      --\n201097216\n\n\n" }
+    it "retrieves rss via Get-Process" do
+      subject.track
 
-      it "retrieves rss via Get-Process" do
-        subject.track
-
-        expect(subject).to have_received(:`).with(/powershell -Command "Get-Process -Id \d+ | select WS"/)
-      end
-
-      it "returns the current rss" do
-        expect(subject.track).to eq(201097216)
-      end
+      expect(subject).to have_received(:`).with(/powershell -Command "Get-Process -Id \d+ | select WS"/)
     end
 
-    context "when powershell is not installed" do
-      let(:powershell_installed) { false }
-      let(:result) { "WorkingSetSize  \n\n201097216        \n\n\n\n" }
-
-      it "retrieves rss via wmic" do
-        subject.track
-
-        expect(subject).to have_received(:`).with(/wmic process where processid=\d+ get WorkingSetSize/)
-      end
-
-      it "returns the current rss" do
-        expect(subject.track).to eq(201097216)
-      end
+    it "returns the current rss" do
+      expect(subject.track).to eq(201097216)
     end
   end
 end

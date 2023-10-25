@@ -44,29 +44,15 @@ module TestProf
           end
         end
 
-        class Windows
-          def initialize
-            @command = powershell_installed? ? get_process : wmic
-          end
-
+        class GetProcess
           def track
-            `#{@command}`.strip.split.last.to_i
+            command.strip.split.last.to_i
           end
 
           private
 
-          def powershell_installed?
-            `where powershell` =~ /powershell.exe/
-          end
-
-          def get_process
-            "powershell -Command \"Get-Process -Id #{$$} | select WS\""
-          end
-
-          # WMIC is deprecated as of Windows 10, version 21H1:
-          # https://learn.microsoft.com/en-us/windows/win32/wmisdk/wmic
-          def wmic
-            "wmic process where processid=#{$$} get WorkingSetSize"
+          def command
+            `powershell -Command "Get-Process -Id #{$$} | select WS"`
           end
         end
 
@@ -74,7 +60,7 @@ module TestProf
           linux: ProcFS,
           macosx: PS,
           unix: PS,
-          windows: Windows
+          windows: GetProcess
         }.freeze
 
         class << self
