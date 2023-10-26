@@ -19,7 +19,7 @@ module TestProf
       attr_reader :top_count, :examples, :groups, :total_memory, :list
 
       def initialize(top_count)
-        raise "Your OS is not supported. Please refer to the list of supported OS" unless supported?
+        raise "Your Ruby Engine or OS is not supported" unless supported?
 
         @top_count = top_count
 
@@ -61,7 +61,7 @@ module TestProf
       end
 
       def supported?
-        true
+        RUBY_ENGINE != "jruby"
       end
     end
 

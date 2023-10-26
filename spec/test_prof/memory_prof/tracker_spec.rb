@@ -160,21 +160,27 @@ end
 describe TestProf::MemoryProf::AllocTracker do
   subject { described_class.new(5) }
 
-  it_behaves_like "TestProf::MemoryProf::Tracker"
+  if RUBY_ENGINE == "jruby"
+    it "raises an error" do
+      expect { subject }.to raise_error("Your Ruby Engine or OS is not supported")
+    end
+  else
+    it_behaves_like "TestProf::MemoryProf::Tracker"
 
-  describe "#track" do
-    before do
-      allow(GC).to receive(:stat).and_return({total_allocated_objects: 100})
+    describe "#track" do
+      before do
+        allow(GC).to receive(:stat).and_return({total_allocated_objects: 100})
+      end
+
+      it "returns the current number of allocations" do
+        expect(subject.track).to eq(100)
+      end
     end
 
-    it "returns the current number of allocations" do
-      expect(subject.track).to eq(100)
-    end
-  end
-
-  describe "#supported?" do
-    it "returns true" do
-      expect(subject.supported?).to be_truthy
+    describe "#supported?" do
+      it "returns true" do
+        expect(subject.supported?).to be_truthy
+      end
     end
   end
 end
@@ -207,7 +213,7 @@ describe TestProf::MemoryProf::RssTracker do
       let(:tool) { nil }
 
       it "raises an error" do
-        expect { subject }.to raise_error("Your OS is not supported. Please refer to the list of supported OS")
+        expect { subject }.to raise_error("Your Ruby Engine or OS is not supported")
       end
     end
   end

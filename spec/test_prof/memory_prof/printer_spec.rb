@@ -3,6 +3,16 @@
 shared_examples "TestProf::MemoryProf::Printer" do
   subject { described_class.new(tracker) }
 
+  let(:tracker) do
+    instance_double(
+      TestProf::MemoryProf::Tracker,
+      top_count: 3,
+      total_memory: 500,
+      groups: groups,
+      examples: examples
+    )
+  end
+
   let(:groups) do
     [
       {name: "AnswersController", location: "./spec/controllers/answers_controller_spec.rb:3", memory: 200},
@@ -21,17 +31,11 @@ shared_examples "TestProf::MemoryProf::Printer" do
 
   before do
     allow(subject).to receive(:log)
-
-    allow(tracker).to receive(:total_memory).and_return(500)
-    allow(tracker).to receive(:groups).and_return(groups)
-    allow(tracker).to receive(:examples).and_return(examples)
   end
 end
 
 describe TestProf::MemoryProf::AllocPrinter do
   include_examples "TestProf::MemoryProf::Printer"
-
-  let(:tracker) { TestProf::MemoryProf::AllocTracker.new(3) }
 
   describe "#print" do
     let(:print) { subject.print }
@@ -139,8 +143,6 @@ end
 
 describe TestProf::MemoryProf::RssPrinter do
   include_examples "TestProf::MemoryProf::Printer"
-
-  let(:tracker) { TestProf::MemoryProf::AllocTracker.new(3) }
 
   describe "#print" do
     let(:print) { subject.print }

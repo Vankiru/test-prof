@@ -28,10 +28,6 @@ module TestProf
 
       attr_reader :tracker
 
-      def print_total
-        raise "Implement in a sub printer"
-      end
-
       def print_block(name, items)
         return if items.empty?
 
@@ -51,14 +47,6 @@ module TestProf
           end
 
         messages.join
-      end
-
-      def mode
-        raise "Implement in a sub printer"
-      end
-
-      def memory_amount(item)
-        raise "Implement in a sub printer"
       end
 
       def memory_percentage(item)

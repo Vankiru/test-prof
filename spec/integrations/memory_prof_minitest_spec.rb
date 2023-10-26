@@ -20,6 +20,17 @@ describe "MemoryProf Minitest" do
     expect(output).to match(/allocates nothing \(\.\/memory_prof_fixture.rb:22\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
   end
 
+  specify "with top_count", :aggregate_failures do
+    output = run_minitest("memory_prof", env: {"TEST_MEM_PROF" => "rss", "TEST_MEM_PROF_COUNT" => "3"})
+
+    expect(output).to include("MemoryProf results")
+    expect(output).to match(/Final RSS: #{memory_human_regex}/)
+
+    expect(output).to include("Top 3 examples (by RSS):")
+
+    expect(output).to match(/allocates 10_000 objects \(\.\/memory_prof_fixture.rb:16\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
+  end
+
   specify "in RSS mode", :aggregate_failures do
     output = run_minitest("memory_prof", env: {"TEST_MEM_PROF" => "rss"})
 
@@ -35,31 +46,20 @@ describe "MemoryProf Minitest" do
     expect(output).to match(/allocates nothing \(\.\/memory_prof_fixture.rb:22\) – \+#{memory_human_regex} \(#{percent_regex}\)/)
   end
 
-  specify "in allocations mode", :aggregate_failures do
-    output = run_minitest("memory_prof", env: {"TEST_MEM_PROF" => "alloc"})
+  if RUBY_ENGINE != "jruby"
+    specify "in allocations mode", :aggregate_failures do
+      output = run_minitest("memory_prof", env: {"TEST_MEM_PROF" => "alloc"})
 
-    expect(output).to include("MemoryProf results")
-    expect(output).to match(/Total allocations: #{number_regex}/)
+      expect(output).to include("MemoryProf results")
+      expect(output).to match(/Total allocations: #{number_regex}/)
 
-    expect(output).to include("Top 5 examples (by allocations):")
+      expect(output).to include("Top 5 examples (by allocations):")
 
-    expect(output).to match(/allocates 10_000 objects \(\.\/memory_prof_fixture.rb:16\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates 1000 objects \(\.\/memory_prof_fixture.rb:12\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates 500 objects \(\.\/memory_prof_fixture.rb:8\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates 100 objects \(\.\/memory_prof_fixture.rb:25\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates nothing \(\.\/memory_prof_fixture.rb:22\) – \+#{number_regex} \(#{percent_regex}\)/)
-  end
-
-  specify "with top_count", :aggregate_failures do
-    output = run_minitest("memory_prof", env: {"TEST_MEM_PROF" => "alloc", "TEST_MEM_PROF_COUNT" => "3"})
-
-    expect(output).to include("MemoryProf results")
-    expect(output).to match(/Total allocations: #{number_regex}/)
-
-    expect(output).to include("Top 3 examples (by allocations):")
-
-    expect(output).to match(/allocates 10_000 objects \(\.\/memory_prof_fixture.rb:16\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates 1000 objects \(\.\/memory_prof_fixture.rb:12\) – \+#{number_regex} \(#{percent_regex}\)/)
-    expect(output).to match(/allocates 500 objects \(\.\/memory_prof_fixture.rb:8\) – \+#{number_regex} \(#{percent_regex}\)/)
+      expect(output).to match(/allocates 10_000 objects \(\.\/memory_prof_fixture.rb:16\) – \+#{number_regex} \(#{percent_regex}\)/)
+      expect(output).to match(/allocates 1000 objects \(\.\/memory_prof_fixture.rb:12\) – \+#{number_regex} \(#{percent_regex}\)/)
+      expect(output).to match(/allocates 500 objects \(\.\/memory_prof_fixture.rb:8\) – \+#{number_regex} \(#{percent_regex}\)/)
+      expect(output).to match(/allocates 100 objects \(\.\/memory_prof_fixture.rb:25\) – \+#{number_regex} \(#{percent_regex}\)/)
+      expect(output).to match(/allocates nothing \(\.\/memory_prof_fixture.rb:22\) – \+#{number_regex} \(#{percent_regex}\)/)
+    end
   end
 end

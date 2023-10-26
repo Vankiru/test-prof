@@ -74,7 +74,9 @@ or with CLI options for Minitest:
 ruby test/my_super_test.rb --mem-prof=rs --mem-prof-top-count=10
 ```
 
-## Supported OS
+## Supported Ruby Engines & OS
+
+Currently the allocation mode is not supported for JRuby.
 
 Since RSS depends on the OS, MemoryProf uses different tools to retrieve it:
 

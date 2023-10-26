@@ -115,12 +115,18 @@ describe TestProf::MemoryProf do
     context "when mode is alloc" do
       before { described_class.config.mode = "alloc" }
 
-      it "returns an instance of AllocTracker" do
-        expect(tracker).to be_kind_of(TestProf::MemoryProf::AllocTracker)
-      end
+      if RUBY_ENGINE == "jruby"
+        it "raises an error" do
+          expect { tracker }.to raise_error("Your Ruby Engine or OS is not supported")
+        end
+      else
+        it "returns an instance of AllocTracker" do
+          expect(tracker).to be_kind_of(TestProf::MemoryProf::AllocTracker)
+        end
 
-      it "sets tracker.top_count to config.top_count" do
-        expect(tracker.top_count).to eq(5)
+        it "sets tracker.top_count to config.top_count" do
+          expect(tracker.top_count).to eq(5)
+        end
       end
     end
 
@@ -144,12 +150,18 @@ describe TestProf::MemoryProf do
     context "when mode is alloc" do
       before { described_class.config.mode = "alloc" }
 
-      it "returns an instance of AllocPrinter" do
-        expect(printer).to be_kind_of(TestProf::MemoryProf::AllocPrinter)
-      end
+      if RUBY_ENGINE == "jruby"
+        it "raises an error" do
+          expect { printer }.to raise_error("Your Ruby Engine or OS is not supported")
+        end
+      else
+        it "returns an instance of AllocPrinter" do
+          expect(printer).to be_kind_of(TestProf::MemoryProf::AllocPrinter)
+        end
 
-      it "sets printer.tracker" do
-        expect(printer.send(:tracker)).to eq(tracker)
+        it "sets printer.tracker" do
+          expect(printer.send(:tracker)).to eq(tracker)
+        end
       end
     end
 
