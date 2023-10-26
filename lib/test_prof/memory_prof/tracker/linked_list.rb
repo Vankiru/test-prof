@@ -89,9 +89,9 @@ module TestProf
         def total_memory
           return 0 if memory_at_finish.nil?
           # It seems that on Windows Minitest may release a lot of memory to
-          # the OS when it finishes and executes #report leadign to memory_at_finish
+          # the OS when it finishes and executes #report, leading to memory_at_finish
           # being less than memory_at_start. In this case we return nested_memory
-          # which does not account for the memory used in `after` hooks, but
+          # which does not account for the memory used in `after` hooks, but it
           # is better than nothing.
           return nested_memory if memory_at_start > memory_at_finish
 

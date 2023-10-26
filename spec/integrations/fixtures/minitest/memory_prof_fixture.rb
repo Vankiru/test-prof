@@ -24,6 +24,5 @@ describe "Second Allocations" do
 
   it "allocates 100 objects" do
     100.times.map { SecureRandom.hex }
-    assert true
   end
 end
