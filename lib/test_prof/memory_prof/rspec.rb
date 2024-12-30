@@ -23,19 +23,23 @@ module TestProf
       end
 
       def example_started(notification)
-        tracker.example_started(notification.example, example(notification))
+        #tracker.example_started(notification.example, example(notification))
+        tracker.example_started(example(notification))
       end
 
       def example_finished(notification)
-        tracker.example_finished(notification.example)
+        #tracker.example_finished(notification.example)
+        tracker.example_finished(example(notification))
       end
 
       def example_group_started(notification)
-        tracker.group_started(notification.group, group(notification))
+        #tracker.group_started(notification.group, group(notification))
+        tracker.group_started(group(notification))
       end
 
       def example_group_finished(notification)
-        tracker.group_finished(notification.group)
+        #tracker.group_finished(notification.group)
+        tracker.group_finished(group(notification))
       end
 
       def report

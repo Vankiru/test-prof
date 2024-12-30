@@ -52,12 +52,12 @@ module TestProf
         attr_reader :head
 
         def initialize(memory_at_start)
-          add_node(:total, :total, memory_at_start)
+          add_node(:total, memory_at_start)
         end
 
-        def add_node(id, item, memory_at_start)
+        def add_node(item, memory_at_start)
           @head = LinkedListNode.new(
-            id: id,
+            id: item,
             item: item,
             previous: head,
             memory_at_start: memory_at_start
@@ -88,6 +88,16 @@ module TestProf
           @nested_memory = 0
         end
 
+        def finish(memory_at_finish)
+          @memory_at_finish = memory_at_finish
+
+          previous&.add_nested(self)
+        end
+
+        def to_hash(as)
+          {**item, memory: send("#{as}_memory")}
+        end
+
         def total_memory
           return 0 if memory_at_finish.nil?
           # It seems that on Windows Minitest may release a lot of memory to
@@ -102,12 +112,6 @@ module TestProf
 
         def hooks_memory
           total_memory - nested_memory
-        end
-
-        def finish(memory_at_finish)
-          @memory_at_finish = memory_at_finish
-
-          previous&.add_nested(self)
         end
 
         protected

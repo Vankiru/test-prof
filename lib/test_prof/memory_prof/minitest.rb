@@ -14,20 +14,13 @@ module Minitest
 
         @tracker = ::TestProf::MemoryProf.tracker(:minitest)
         @printer = ::TestProf::MemoryProf.printer(tracker)
-
-        @current_example = nil
-      end
-
-      def prerecord(group, example)
-        #puts "PRERECORD #{group.class} - #{example.class}"
-        #set_current_example(group, example)
-        #tracker.example_started(current_example)
       end
 
       def record(result)
-        puts "RECORD #{result.class} - #{result.metadata}"
-        #tracker.example_started(current_example)
-        tracker.example_finished(current_example)
+        example = to_example(result)
+
+        tracker.example_started(example, result)
+        tracker.example_finished(example, result)
       end
 
       def start
@@ -41,11 +34,15 @@ module Minitest
 
       private
 
-      def set_current_example(group, example)
-        @current_example = {
-          name: example.gsub(/^test_(?:\d+_)?/, ""),
-          location: location_with_line_number(group, example)
+      def to_example(result)
+        {
+          name: result.name.gsub(/^test_(?:\d+_)?/, ""),
+          location: location_with_line_number(result)
         }
+      end
+
+      def location_with_line_number(result)
+        File.expand_path(result.source_location.join(":")).gsub(Dir.getwd, ".")
       end
 
       def configure_profiler(options)

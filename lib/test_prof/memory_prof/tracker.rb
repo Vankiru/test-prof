@@ -25,34 +25,37 @@ module TestProf
       end
 
       def start
-        @list = LinkedList.new(start_track)
+        @list = LinkedList.new(memory_at(:start))
       end
 
       def finish
-        node = list.remove_node(:total, finish_track)
+        node = list.remove_node(:total, memory_at(:finish))
         @total_memory = node.total_memory
       end
 
-      def example_started(id, example = id)
-        list.add_node(id, example, start_track(id))
+      def example_started(example, result = nil)
+        memory = memory_at(:start, result)
+
+        list.add_node(example, memory)
       end
 
-      def example_finished(id)
-        node = list.remove_node(id, finish_track(id))
-        return unless node
+      def example_finished(example, result = nil)
+        memory = memory_at(:finish, result)
 
-        examples << {**node.item, memory: node.total_memory}
+        node = list.remove_node(example, memory)
+        examples << node.to_hash(:total) if node
       end
 
-      def group_started(id, group = id)
-        list.add_node(id, group, start_track(id))
+      def group_started(group, result = nil)
+        memory = memory_at(:start, result)
+        list.add_node(group, memory)
       end
 
-      def group_finished(id)
-        node = list.remove_node(id, finish_track(id))
-        return unless node
+      def group_finished(group, result = nil)
+        memory = memory_at(:finish, result)
 
-        groups << {**node.item, memory: node.hooks_memory}
+        node = list.remove_node(group, memory)
+        groups << node.to_hash(:hooks) if node
       end
     end
 
@@ -67,28 +70,22 @@ module TestProf
 
       private
 
-      def start_track(example = nil)
-        meter.measure
-      end
-
-      def finish_track(example = nil)
+      def memory_at(at, result = nil)
         meter.measure
       end
     end
 
     class MinitestTracker < Tracker
+      def finish
+        node = list.remove_node(:total, nil)
+        @total_memory = node.nested_memory
+      end
+
       private
 
-      def start_track(example = nil)
-        metadata(example, :start) if example
-      end
-
-      def finish_track(example = nil)
-        metadata(example, :finish) if example
-      end
-
-      def metadata(example, value)
-        example.metadata.dig(:test_prof, :memory_prof, value)
+      def memory_at(at, result = nil)
+        return if result.nil?
+        result.metadata.dig(:test_prof, :memory_prof, at)
       end
     end
   end

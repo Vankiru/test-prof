@@ -13,3 +13,5 @@ spec/integrations/fixtures/rspec/tmp/
 spec/integrations/fixtures/rspec/gemfiles/*.lock
 Gemfile.local*
 tmp/
+*.swo
+*.swp
