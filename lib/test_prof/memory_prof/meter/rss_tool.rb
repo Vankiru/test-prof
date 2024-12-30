@@ -4,7 +4,7 @@ require "rbconfig"
 
 module TestProf
   module MemoryProf
-    class Tracker
+    class Meter
       module RssTool
         class ProcFS
           def initialize
@@ -12,7 +12,7 @@ module TestProf
             @page_size = get_page_size
           end
 
-          def track
+          def measure
             @statm.seek(0)
             @statm.gets.split(/\s/)[1].to_i * @page_size
           end
@@ -39,13 +39,13 @@ module TestProf
         end
 
         class PS
-          def track
+          def measure
             `ps -o rss -p #{$$}`.strip.split.last.to_i * 1024
           end
         end
 
         class GetProcess
-          def track
+          def measure
             command.strip.split.last.to_i
           end
 

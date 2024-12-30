@@ -12,18 +12,21 @@ module Minitest
 
         configure_profiler(options)
 
-        @tracker = ::TestProf::MemoryProf.tracker
+        @tracker = ::TestProf::MemoryProf.tracker(:minitest)
         @printer = ::TestProf::MemoryProf.printer(tracker)
 
         @current_example = nil
       end
 
       def prerecord(group, example)
-        set_current_example(group, example)
-        tracker.example_started(current_example)
+        #puts "PRERECORD #{group.class} - #{example.class}"
+        #set_current_example(group, example)
+        #tracker.example_started(current_example)
       end
 
-      def record(example)
+      def record(result)
+        puts "RECORD #{result.class} - #{result.metadata}"
+        #tracker.example_started(current_example)
         tracker.example_finished(current_example)
       end
 

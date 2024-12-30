@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe TestProf::MemoryProf::Tracker::RssTool do
+describe TestProf::MemoryProf::Meter::RssTool do
   subject { described_class }
 
   describe ".tool" do
@@ -79,7 +79,7 @@ describe TestProf::MemoryProf::Tracker::RssTool do
   end
 end
 
-describe TestProf::MemoryProf::Tracker::RssTool::ProcFS do
+describe TestProf::MemoryProf::Meter::RssTool::ProcFS do
   subject { described_class.new }
 
   describe "#track" do
@@ -102,7 +102,7 @@ describe TestProf::MemoryProf::Tracker::RssTool::ProcFS do
   end
 end
 
-describe TestProf::MemoryProf::Tracker::RssTool::PS do
+describe TestProf::MemoryProf::Meter::RssTool::PS do
   subject { described_class.new }
 
   describe "#track" do
@@ -122,7 +122,7 @@ describe TestProf::MemoryProf::Tracker::RssTool::PS do
   end
 end
 
-describe TestProf::MemoryProf::Tracker::RssTool::GetProcess do
+describe TestProf::MemoryProf::Meter::RssTool::GetProcess do
   subject { described_class.new }
 
   describe "#track" do

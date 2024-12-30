@@ -13,7 +13,7 @@ module TestProf
       attr_reader :tracker, :printer
 
       def initialize
-        @tracker = MemoryProf.tracker
+        @tracker = MemoryProf.tracker(:rspec)
         @printer = MemoryProf.printer(tracker)
 
         @current_group = nil

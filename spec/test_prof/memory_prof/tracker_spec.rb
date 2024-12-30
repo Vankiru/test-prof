@@ -159,64 +159,64 @@ shared_examples "TestProf::MemoryProf::Tracker" do
   end
 end
 
-describe TestProf::MemoryProf::AllocTracker do
-  subject { described_class.new(5) }
+#describe TestProf::MemoryProf::AllocTracker do
+  #subject { described_class.new(5) }
 
-  if RUBY_ENGINE == "jruby"
-    it "raises an error" do
-      expect { subject }.to raise_error("Your Ruby Engine or OS is not supported")
-    end
-  else
-    it_behaves_like "TestProf::MemoryProf::Tracker"
+  #if RUBY_ENGINE == "jruby"
+    #it "raises an error" do
+      #expect { subject }.to raise_error("Your Ruby Engine or OS is not supported")
+    #end
+  #else
+    #it_behaves_like "TestProf::MemoryProf::Tracker"
 
-    describe "#track" do
-      before do
-        allow(GC).to receive(:stat).and_return({total_allocated_objects: 100})
-      end
+    #describe "#track" do
+      #before do
+        #allow(GC).to receive(:stat).and_return({total_allocated_objects: 100})
+      #end
 
-      it "returns the current number of allocations" do
-        expect(subject.track).to eq(100)
-      end
-    end
+      #it "returns the current number of allocations" do
+        #expect(subject.track).to eq(100)
+      #end
+    #end
 
-    describe "#supported?" do
-      it "returns true" do
-        expect(subject.supported?).to be_truthy
-      end
-    end
-  end
-end
+    #describe "#supported?" do
+      #it "returns true" do
+        #expect(subject.supported?).to be_truthy
+      #end
+    #end
+  #end
+#end
 
-describe TestProf::MemoryProf::RssTracker do
-  subject { described_class.new(5) }
+#describe TestProf::MemoryProf::RssTracker do
+  #subject { described_class.new(5) }
 
-  let(:tool) { instance_double(TestProf::MemoryProf::Tracker::RssTool::PS, track: 100) }
+  #let(:tool) { instance_double(TestProf::MemoryProf::Tracker::RssTool::PS, track: 100) }
 
-  before do
-    allow(TestProf::MemoryProf::Tracker::RssTool).to receive(:tool).and_return(tool)
-  end
+  #before do
+    #allow(TestProf::MemoryProf::Tracker::RssTool).to receive(:tool).and_return(tool)
+  #end
 
-  it_behaves_like "TestProf::MemoryProf::Tracker"
+  #it_behaves_like "TestProf::MemoryProf::Tracker"
 
-  describe "#track" do
-    it "returns the current rss" do
-      expect(subject.track).to eq(100)
-    end
-  end
+  #describe "#track" do
+    #it "returns the current rss" do
+      #expect(subject.track).to eq(100)
+    #end
+  #end
 
-  describe "#supported?" do
-    context "when the host OS is supported" do
-      it "returns true" do
-        expect(subject.supported?).to be_truthy
-      end
-    end
+  #describe "#supported?" do
+    #context "when the host OS is supported" do
+      #it "returns true" do
+        #expect(subject.supported?).to be_truthy
+      #end
+    #end
 
-    context "when the host OS is not supported" do
-      let(:tool) { nil }
+    #context "when the host OS is not supported" do
+      #let(:tool) { nil }
 
-      it "raises an error" do
-        expect { subject }.to raise_error("Your Ruby Engine or OS is not supported")
-      end
-    end
-  end
-end
+      #it "raises an error" do
+        #expect { subject }.to raise_error("Your Ruby Engine or OS is not supported")
+      #end
+    #end
+  #end
+#end

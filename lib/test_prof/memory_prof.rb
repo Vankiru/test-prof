@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "test_prof/memory_prof/meter"
 require "test_prof/memory_prof/tracker"
 require "test_prof/memory_prof/printer"
 
@@ -44,8 +45,13 @@ module TestProf
 
     class << self
       TRACKERS = {
-        alloc: AllocTracker,
-        rss: RssTracker
+        minitest: MinitestTracker,
+        rspec: RspecTracker
+      }.freeze
+
+      METERS = {
+        alloc: AllocMeter,
+        rss: RssMeter
       }.freeze
 
       PRINTERS = {
@@ -61,8 +67,12 @@ module TestProf
         yield config
       end
 
-      def tracker
-        tracker = TRACKERS[config.mode]
+      def meter
+        METERS[config.mode].new
+      end
+
+      def tracker(type)
+        tracker = TRACKERS[type]
         tracker.new(config.top_count)
       end
 

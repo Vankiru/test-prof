@@ -5,6 +5,8 @@ require "test-prof"
 require "securerandom"
 
 describe "First Allocations" do
+  include TestProf::Minitest
+
   it "allocates 500 objects" do
     500.times.map { SecureRandom.hex }
   end
@@ -19,6 +21,8 @@ describe "First Allocations" do
 end
 
 describe "Second Allocations" do
+  include TestProf::Minitest
+
   it "allocates nothing" do
   end
 

@@ -18,6 +18,7 @@ module Minitest
       end
 
       def prerecord(group, example)
+        puts "PRERECORD #{Process.pid}"
         return unless event_prof_activated?
 
         # enable event profiling
@@ -25,6 +26,7 @@ module Minitest
       end
 
       def record(result)
+        puts "RECORD #{Process.pid}"
         results.track(main_folder_path(result), time: result.time, events: fetch_events_data)
         @events_profiler.group_started(nil) if event_prof_activated? # reset and disable event profilers
       end

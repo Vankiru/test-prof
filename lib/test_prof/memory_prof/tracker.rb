@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "test_prof/memory_prof/tracker/linked_list"
-require "test_prof/memory_prof/tracker/rss_tool"
 
 module TestProf
   module MemoryProf
@@ -19,8 +18,6 @@ module TestProf
       attr_reader :top_count, :examples, :groups, :total_memory, :list
 
       def initialize(top_count)
-        raise "Your Ruby Engine or OS is not supported" unless supported?
-
         @top_count = top_count
 
         @examples = Utils::SizedOrderedSet.new(top_count, sort_by: :memory)
@@ -28,60 +25,70 @@ module TestProf
       end
 
       def start
-        @list = LinkedList.new(track)
+        @list = LinkedList.new(start_track)
       end
 
       def finish
-        node = list.remove_node(:total, track)
+        node = list.remove_node(:total, finish_track)
         @total_memory = node.total_memory
       end
 
       def example_started(id, example = id)
-        list.add_node(id, example, track)
+        list.add_node(id, example, start_track(id))
       end
 
       def example_finished(id)
-        node = list.remove_node(id, track)
+        node = list.remove_node(id, finish_track(id))
         return unless node
 
         examples << {**node.item, memory: node.total_memory}
       end
 
       def group_started(id, group = id)
-        list.add_node(id, group, track)
+        list.add_node(id, group, start_track(id))
       end
 
       def group_finished(id)
-        node = list.remove_node(id, track)
+        node = list.remove_node(id, finish_track(id))
         return unless node
 
         groups << {**node.item, memory: node.hooks_memory}
       end
     end
 
-    class AllocTracker < Tracker
-      def track
-        GC.stat[:total_allocated_objects]
+    class RspecTracker < Tracker
+      attr_reader :meter
+
+      def initialize(top_count)
+        super
+
+        @meter = MemoryProf.meter
       end
 
-      def supported?
-        RUBY_ENGINE != "jruby"
+      private
+
+      def start_track(example = nil)
+        meter.measure
+      end
+
+      def finish_track(example = nil)
+        meter.measure
       end
     end
 
-    class RssTracker < Tracker
-      def initialize(top_count)
-        @rss_tool = RssTool.tool
+    class MinitestTracker < Tracker
+      private
 
-        super
+      def start_track(example = nil)
+        metadata(example, :start) if example
       end
 
-      def track
-        @rss_tool.track
+      def finish_track(example = nil)
+        metadata(example, :finish) if example
       end
 
-      def supported?
-        !!@rss_tool
+      def metadata(example, value)
+        example.metadata.dig(:test_prof, :memory_prof, value)
       end
     end
   end
